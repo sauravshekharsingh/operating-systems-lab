@@ -1,49 +1,43 @@
-#include<stdio.h>
-#include<unistd.h>
+#include <stdio.h>
+#include <unistd.h>
 #include<sys/wait.h>
+#define MSGSIZE 40
 
-int main(int argc, char* argv[]) {
-    // File descriptors & fd[0] - read & fd[1] - write
+int main(int argc, char *argv[]) {
+    char inbuf[MSGSIZE];
     int fd[2];
 
-    if(pipe(fd) == -1) {
-        printf("Error in creating the pipe\n");
+    int id = fork();
+
+    // Create a child process
+    if(id == -1) {
+        printf("Could not fork process\n");
         return 1;
     }
 
-    // Create a child process
-    int id = fork();
-    if(id == -1) {
-        printf("Error occured with fork\n");
+    // Create a pipe
+    if (pipe(fd) == -1) {
+        printf("Could not create pipe\n");
         return 2;
     }
 
-    if(id == 0) {
-        // Reading from the pipe in the child process
-        close(fd[0]);
-        
-        int x = 10;
-        if(write(fd[1], &x, sizeof(int)) == -1) {
-            printf("Error in writing to the pipe\n");
-            return 3;
-        }
-        
-        close(fd[1]);
-    } else {
-        // Writing to the pipe in the child process
-        close(fd[1]);
-        
-        int y;
-        if(read(fd[0], &y, sizeof(int)) == -1) {
-            printf("Error in reading from the pipe\n");
-            return 4;
-        }
-        close(fd[0]);
+    if(id > 0) {
+        char* msg1 = "This is a message";
+        char* msg2 = "This is another message";
 
-        printf("Data from the child process: %d\n", y);
+        // Write two messages to the pipe in the parent process
+        write(fd[1], msg1, MSGSIZE);
+        write(fd[1], msg2, MSGSIZE);
+
+    } else {
+        // Read the messages from the pipe in the child process
+        for (int i = 0; i < 2; i++) {
+            printf("%d ", i);
+            read(fd[0], inbuf, MSGSIZE);
+            printf("%s\n", inbuf);
+        }
     }
 
-    wait(NULL);
-
     return 0;
-}
+} 
+ 
