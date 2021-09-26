@@ -22,20 +22,26 @@ int main(int argc, char *argv[]) {
     }
 
     if(id > 0) {
+        printf("Parent process\n");
+
         char* msg1 = "This is a message";
         char* msg2 = "This is another message";
 
         // Write two messages to the pipe in the parent process
+        printf("Write message 1\n");
         write(fd[1], msg1, MSGSIZE);
+        printf("Write message 2\n");
         write(fd[1], msg2, MSGSIZE);
-
     } else {
+        printf("Child process\n");
+
+        int nbytes;
         // Read the messages from the pipe in the child process
-        for (int i = 0; i < 2; i++) {
-            printf("%d ", i);
-            read(fd[0], inbuf, MSGSIZE);
+        while((nbytes = read(fd[0], inbuf, MSGSIZE)) > 0) {
             printf("%s\n", inbuf);
         }
+
+        printf("Finished reading\n");
     }
 
     return 0;
