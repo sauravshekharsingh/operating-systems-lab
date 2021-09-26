@@ -3,11 +3,11 @@
 #include<stdlib.h>
 #include<sys/wait.h>
 
-int main() {
+int main(int argc, char* argv[]) {
     // Create child process
     int id = fork();
     int status;
-    
+
     if(id == -1) {
         printf("Error occured with fork\n");\
         return 1;
