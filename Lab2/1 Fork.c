@@ -1,7 +1,11 @@
 #include<stdio.h>
 #include<unistd.h>
+#include<sys/wait.h>
+
 int main() {
-    int val = fork();
-    printf("Process %d\n", val);
+    // Create child process
+    int id = fork();
+    printf("Process %d\n", id);
+    wait(NULL);
     return 0;
 }
