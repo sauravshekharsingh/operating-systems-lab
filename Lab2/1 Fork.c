@@ -2,7 +2,7 @@
 #include<unistd.h>
 #include<sys/wait.h>
 
-int main() {
+int main(int argc, char* argv[]) {
     // Create child process
     int id = fork();
     
