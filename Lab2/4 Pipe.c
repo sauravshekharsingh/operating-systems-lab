@@ -1,30 +1,34 @@
-#include <stdio.h>
-#include <unistd.h>
-#define MSGSIZE 40
+#include<stdio.h>
+#include<unistd.h>
 
-int main(int argc, char *argv[]) {
-    char inbuf[MSGSIZE];
-    int fd[2];
+int main() {
+   int fd[2];
 
-    // Create a pipe
-    if (pipe(fd) == -1) {
-        printf("Could not create pipe\n");
-        return 1;
-    }
-
-    char* msg1 = "This is a message";
-    char* msg2 = "This is another message";
-
-    // Write two messages to the pipe
-    write(fd[1], msg1, MSGSIZE);
-    write(fd[1], msg2, MSGSIZE);
-
-    // Read the messages from the pipe
-    for (int i = 0; i < 2; i++) {
-        read(fd[0], inbuf, MSGSIZE);
-        printf("%s\n", inbuf);
-    }
-
-    return 0;
-} 
- 
+    // Message to be written
+   char writemessages[2][40]={"This is a message", "This is another message"};
+   char readmessage[40];
+   
+   // Creating a pipe
+   if (pipe(fd) == -1) {
+      printf("Error in creating pipe\n");
+      return 1;
+   }
+   
+   // Write a message to pipe 1
+   printf("Writing to pipe - Message 1 is %s\n", writemessages[0]);
+   write(pipefds[1], writemessages[0], sizeof(writemessages[0]));
+   
+   // Read a message from pipe 1
+   read(pipefds[0], readmessage, sizeof(readmessage));
+   printf("Reading from pipe – Message 1 is %s\n", readmessage);
+   
+   // Write a message to pipe 2
+   printf("Writing to pipe - Message 2 is %s\n", writemessages[0]);
+   write(pipefds[1], writemessages[1], sizeof(writemessages[0]));
+   
+   // Read a message from pipe 2
+   read(pipefds[0], readmessage, sizeof(readmessage));
+   printf("Reading from pipe – Message 2 is %s\n", readmessage);
+   
+   return 0;
+}
