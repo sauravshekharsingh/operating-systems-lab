@@ -2,7 +2,6 @@
 #include<stdio.h>
 #include<pthread.h>
 #include<unistd.h>
-#include<sys/types.h>
 
 #define NUM_THREADS 2
 
@@ -12,11 +11,10 @@ void *routine() {
     // Lock mutex
     pthread_mutex_lock(&mutex);
 
-    // pid_t tid = gettid();
-    printf("Thread: %d", gettid());
+    printf("Thread: %d\n", gettid());
 
     // Unlock mutex
-    // pthread_mutex_unlock(&mutex);
+    pthread_mutex_unlock(&mutex);
 }
 
 int main() {
@@ -33,12 +31,15 @@ int main() {
         }
     }
 
+    // Wait for thread to finish execution
     for(int i = 0; i < NUM_THREADS; i++) {
-        // Wait for thread to finish execution
         if(pthread_join(th[i], NULL) != 0) {
             return 2;
         }
     }
+
+    // Destroy the mutex
+    pthread_mutex_destroy(&mutex);
     
     return 0;
 }
