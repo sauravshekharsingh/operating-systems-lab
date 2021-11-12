@@ -4,7 +4,7 @@
 #include<pthread.h>
 #include<semaphore.h>
 
-#define NUM_PHILOSPHERS 2
+#define NUM_PHILOSPHERS 5
 
 sem_t chopsticks[NUM_PHILOSPHERS];
 
@@ -23,8 +23,6 @@ void *routine(void *arg) {
         } else {
             sem_wait(&chopsticks[(i + 1) % NUM_PHILOSPHERS]);
             printf("Philosopher %d picked %dth chopstick\n", i, (i + 1) % NUM_PHILOSPHERS);
-
-            sleep(1);
 
             sem_wait(&chopsticks[i]);
             printf("Philosopher %d picked %dth chopstick\n", i, i);
